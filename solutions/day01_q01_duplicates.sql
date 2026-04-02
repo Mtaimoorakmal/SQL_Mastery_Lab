@@ -85,7 +85,17 @@ FROM (
 ) t
 WHERE rn > 1
 ORDER BY customer_name, email, signup_date, row_id;
+-- =========================
+-- simple variant: just show the first occurrence of each duplicate group
+-- WHERE rn = 1 instead of > 1
 
+-- =========================================================
+select * from(
+select * ,
+row_number() over(partition by customer_name, email) as rn
+from customer_staging ) 
+where rn > 1
+order by  rn desc, customer_name;
 -- =========================================================
 -- 4) Show duplicates using a self-join
 -- Useful for understanding pairwise duplicate logic.
